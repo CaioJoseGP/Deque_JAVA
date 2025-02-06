@@ -5,35 +5,51 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Deque estacionamento = new Deque(10);
 
-        while (true) {
-            System.out.print("Digite C <placa> para chegada, P <placa> para partida ou F para finalizar: ");
+        while(true) {
+            System.out.print("\nEscolha uma opção:\n" + 
+                "C para chegada na PT\n" +
+                "R para chegada na RBC\n" +
+                "P para partida pela RBC\n" +
+                "E para exibir a situação do estacionamento\n" +
+                "F para finalizar \n");
             String comando = scanner.next();
             
             if (comando.equals("F")) {
+                System.out.println("Saindo...");
                 break;
             }
 
-            int placa = scanner.nextInt();
+            if(comando.equals("C") || comando.equals("c")) {
+                System.out.print("\nDigite a placa: ");
+                String placa = scanner.next();
 
-            if(comando.equals("C")) {
+                System.out.println("\nChegada do veículo " + placa + " na PT (entrada principal).");
                 estacionamento.inserirInicio(placa);
 
-            } else if(comando.equals("P")) {
+            } else if(comando.equals("P") || comando.equals("p")) {
+                System.out.print("\nDigite a placa: ");
+                String placa = scanner.next();
+                
                 estacionamento.removerCarro(placa);
 
             } 
-
-            //Caso fosse permitido o carro chegar também pela RBC, a instrução abaixo deve ser implementada:
-
-            /*
-                else if(comando.equals("C2")) {
-                estacionamento.inserirFim(placa);
-            }*/ 
             
-            //Além disso, coloca na mensagem do menu a opção C2 ^(°0°)^
+            //Daqui até o próximo comentário é tudo...
+                else if(comando.equals("R") || comando.equals("r")) {
+                    System.out.print("\nDigite a placa: ");
+                    String placa = scanner.next();
+                    
+                    System.out.println("\nChegada do veículo " + placa + " na RBC (entrada secundária).");
+                    estacionamento.inserirFim(placa);
+                } 
+            //a parte se pudesse inserir pela RBC !(^o^)!
 
-            else {
-                System.out.println("Comando inválido! Use 'C <placa>' ou 'P <placa>'.");
+            else if(comando.equals("E") || comando.equals("e")) {
+                System.out.println("\nSituação do estacionamento: ");
+                estacionamento.exibir();
+
+            } else {
+                System.out.println("\nComando inválido!");
             }
         }
 

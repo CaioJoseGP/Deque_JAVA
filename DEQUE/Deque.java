@@ -19,7 +19,7 @@ public class Deque {
         return tamanho == 0;
     }
 
-    public void inserirInicio(int placa) {
+    public void inserirInicio(String placa) {
         if (estaCheio()) {
             System.out.println("Estacionamento cheio! Carro " + placa + " está aguardando vaga.");
             return;
@@ -34,61 +34,51 @@ public class Deque {
             inicio.anterior = novo;
             inicio = novo;
         }
+        
         tamanho++;
-        System.out.println("Carro " + placa + " estacionado na PT.");
     }
 
-    public void removerCarro(int placa) {
+    public void removerCarro(String placa) {
         if (estaVazio()) {
             System.out.println("O estacionamento está vazio!");
             return;
         }
-
-        No atual = inicio;
-        int deslocamentos = 0;
+    
         Deque temporario = new Deque(capacidade);
-
-        while (atual != null && atual.placa != placa) {
-            temporario.inserirFim(atual.placa);
+        No atual = inicio;
+    
+        while (atual != null) {
+            if (!atual.placa.equals(placa)) {
+                temporario.inserirFim(atual.placa);
+            }
             atual = atual.proximo;
-            deslocamentos++;
         }
-
-        if (atual == null) {
+    
+        if (temporario.tamanho == tamanho) {
             System.out.println("Carro " + placa + " não está no estacionamento.");
             return;
         }
-
-        if (atual == inicio) {
-            removerInicio();
-
-        } else if (atual == fim) {
-            removerFim();
-
-        } else {
-            atual.anterior.proximo = atual.proximo;
-            atual.proximo.anterior = atual.anterior;
-            tamanho--;
-        }
-
-        System.out.println("Carro " + placa + " saiu do estacionamento após " + (deslocamentos + 1) + " deslocamentos.");
-
+    
+        limparEstacionamento();
+    
         while (!temporario.estaVazio()) {
-            inserirInicio(temporario.removerFimRetorno());
+            inserirFim(temporario.removerInicioRetorno());
         }
+    
+        System.out.println("\nCarro " + placa + " removido do estacionamento.");
+    }
+    
+    private void limparEstacionamento() {
+        inicio = null;
+        fim = null;
+        tamanho = 0;
     }
 
     public void removerInicio() {
-        if (estaVazio()) {
-            System.out.println("Deque Vazio!");
-            return;
-        }
-
         inicio = inicio.proximo;
-        
+
         if (inicio != null) {
             inicio.anterior = null;
-
         } else {
             fim = null;
         }
@@ -97,16 +87,10 @@ public class Deque {
     }
 
     public void removerFim() {
-        if (estaVazio()) {
-            System.out.println("Deque Vazio!");
-            return;
-        }
-
         fim = fim.anterior;
 
         if (fim != null) {
             fim.proximo = null;
-
         } else {
             inicio = null;
         }
@@ -114,17 +98,26 @@ public class Deque {
         tamanho--;
     }
 
-    public int removerFimRetorno() {
+    public String removerInicioRetorno() {
         if (estaVazio()) {
-            return -1;
+            return null;
         }
-
-        int placa = fim.placa;
-        removerFim();
+    
+        String placa = inicio.placa;
+    
+        if (inicio == fim) { 
+            inicio = null;
+            fim = null;
+        } else {
+            inicio = inicio.proximo;
+            inicio.anterior = null;
+        }
+    
+        tamanho--;
         return placa;
     }
 
-    public void inserirFim(int placa) {
+    public void inserirFim(String placa) {
         if (estaCheio()) return;
 
         No novo = new No(placa);
@@ -143,10 +136,23 @@ public class Deque {
 
     public void exibir() {
         No atual = inicio;
-        while (atual != null) {
-            System.out.print(atual.placa + " ");
-            atual = atual.proximo;
+        int i = 1;
+
+        if (estaVazio()) {
+            System.out.println("Não há veículos cadastrados!");
         }
+
+        while(atual != null) {
+            System.out.print(" :[ " + atual.placa + " ]: ");
+            atual = atual.proximo;
+
+            if(i == 5) {
+                System.out.println("\n");
+            }
+
+            i++;
+        }
+
         System.out.println();
     }
 }
